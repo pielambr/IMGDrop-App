@@ -7,4 +7,5 @@
     <string name="upload">Upload</string>
     <string name="browse">Browse</string>
     <string name="no_selection">No file is selected</string>
+    <string name="upload_url">What is your IMGDrop host?</string>
 </resources>

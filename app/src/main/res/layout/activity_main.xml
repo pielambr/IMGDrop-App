@@ -1,57 +1,89 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <android.support.v7.widget.Toolbar
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:titleTextAppearance="@color/white"
         android:background="@color/lightblue"
         android:elevation="4dp"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+        android:titleTextAppearance="@color/white"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <TextView
-        android:textSize="@dimen/abc_text_size_medium_material"
+        android:layout_centerHorizontal="true"
         android:id="@+id/tooltip"
-        android:layout_margin="16dp"
-        android:layout_below="@id/toolbar"
-        android:text="@string/upload_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:layout_below="@id/toolbar"
+        android:layout_margin="16dp"
+        android:text="@string/upload_tip"
+        android:textSize="@dimen/abc_text_size_medium_material" />
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_below="@id/tooltip"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_placeholder" />
 
     <LinearLayout
+        android:layout_centerHorizontal="true"
         android:id="@+id/browse"
-        android:layout_below="@id/tooltip"
-        android:layout_gravity="center_vertical"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/thumbnail"
+        android:layout_gravity="center_vertical"
         android:layout_margin="16dp">
+
         <Button
-            android:onClick="browse"
-            android:text="@string/browse"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:onClick="browse"
+            android:text="@string/browse" />
+
         <TextView
             android:id="@+id/browse_file"
-            android:layout_marginLeft="16dp"
-            android:text="@string/no_selection"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="@string/no_selection" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/settings"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/browse"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/upload_url" />
+
+        <EditText
+            android:id="@+id/txtUpload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="15" />
+
     </LinearLayout>
 
     <Button
-        android:text="@string/upload"
-        android:layout_margin="16dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/browse"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/settings"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:onClick="upload"
+        android:text="@string/upload" />
 
 </RelativeLayout>
