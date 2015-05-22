@@ -1,6 +1,8 @@
 package be.pielambr.imgdrop;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -23,17 +25,16 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.Console;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import be.pielambr.imgdrop.resources.Constants;
 
@@ -95,18 +96,25 @@ public class MainActivity extends ActionBarActivity {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 getImage(fileUri).compress(Bitmap.CompressFormat.PNG, 100, out);
                 byte[] myByteArray = out.toByteArray();
+                ByteArrayInputStream input = new ByteArrayInputStream(myByteArray);
                 RequestParams params = new RequestParams();
-                params.put(Constants.UPLOAD_KEY, new ByteArrayInputStream(myByteArray), "image.png");
+                params.put(Constants.UPLOAD_KEY, input, "image.png", "image/png");
                 AsyncHttpClient httpClient = new AsyncHttpClient(true, 80, 443);
                 httpClient.setUserAgent(Constants.USER_AGENT);
                 httpClient.post(this, getFullUploadUri(), params, new JsonHttpResponseHandler() {
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, String string, Throwable throwable) {
-                        Log.i("IMGDrop", string);
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject object) {
+                        Log.i("IMGDrop", object.toString());
                     }
+
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        Log.i("IMGDrop", response.toString());
+                        try {
+                            String name = response.getString(Constants.IMAGE_KEY);
+                            shareImage(name);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             } catch (FileNotFoundException e) {
@@ -165,5 +173,33 @@ public class MainActivity extends ActionBarActivity {
         }
         baseUri += Constants.UPLOAD_FILE;
         return baseUri;
+    }
+
+    private void shareImage(String name) {
+        String baseUri = getUploadUri();
+        if (baseUri.charAt(baseUri.length() - 1) != '/') {
+            baseUri += '/';
+        }
+        baseUri += Constants.VIEW_FILE;
+        baseUri += name;
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.MINUTE, 30);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy, HH:mm:ss");
+        String date = sdf.format(now.getTime());
+        final String message = getString(R.string.share_message, baseUri, date);
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.share_title))
+                .setMessage(message)
+                .setCancelable(true)
+                .setPositiveButton("Share", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, message);
+                        sendIntent.setType("text/plain");
+                        startActivity(sendIntent);
+                    }
+                }).create().show();
     }
 }

@@ -8,4 +8,6 @@
     <string name="browse">Browse</string>
     <string name="no_selection">No file is selected</string>
     <string name="upload_url">What is your IMGDrop host?</string>
+    <string name="share_message">Check out this IMGDrop image; %1$s - it expires on %2$s!</string>
+    <string name="share_title">Share your image</string>
 </resources>
